@@ -1,10 +1,12 @@
 package rsachdev95.moviesapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
+@Document(collection = "movies")
 public class Movie {
     @JsonProperty("movie_id")
     @Field("_id")

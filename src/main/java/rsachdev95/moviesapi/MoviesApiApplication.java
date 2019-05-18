@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MoviesApiApplication {
 
+	public static final String APPLICATION_NAME_SPACE = "movies-api";
+
 	public static void main(String[] args) {
 		SpringApplication.run(MoviesApiApplication.class, args);
 	}
