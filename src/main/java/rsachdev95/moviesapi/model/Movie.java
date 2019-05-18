@@ -1,35 +1,42 @@
-package rsachdev95.moviesapi.model.storagemodel;
+package rsachdev95.moviesapi.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
-@Document(collection="movies")
-public class MovieStorageModel {
-    @Field("movie_id")
+public class Movie {
+    @JsonProperty("movie_id")
+    @Field("_id")
     private String id;
 
+    @JsonProperty("title")
     @Field("title")
     private String title;
 
+    @JsonProperty("description")
     @Field("description")
     private String description;
 
+    @JsonProperty("producer")
     @Field("producer")
     private String producer;
 
+    @JsonProperty("available_in_3d")
     @Field("available_in_3d")
     private boolean availableIn3d;
 
+    @JsonProperty("age_rating")
     @Field("age_rating")
     private String ageRating;
 
+    @JsonProperty("likes")
     @Field("likes")
     private int likes;
 
+    @JsonProperty("comments")
     @Field("comments")
-    private List<CommentStorageModel> comments;
+    private List<Comment> comments;
 
     public String getId() {
         return id;
@@ -87,11 +94,11 @@ public class MovieStorageModel {
         this.likes = likes;
     }
 
-    public List<CommentStorageModel> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentStorageModel> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 }
