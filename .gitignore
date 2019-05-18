@@ -23,4 +23,23 @@
 hs_err_pid*
 
 # Idea folder
-.idea/
+.idea
+*.iws
+*.iml
+*.ipr
+
+HELP.md
+/target/
+.mvn/
+mvnw
+mvnw.cmd
+.DS_Store
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
