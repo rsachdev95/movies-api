@@ -1,19 +1,22 @@
-package rsachdev95.moviesapi.model.storagemodel;
+package rsachdev95.moviesapi.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.LocalDate;
-
-public class CommentStorageModel {
+public class Comment {
+    @JsonProperty("user")
     @Field("user")
     private String user;
 
+    @JsonProperty("message")
     @Field("message")
     private String message;
 
+    @JsonProperty("date_created")
     @Field("dateCreated")
-    private LocalDate dateCreated;
+    private long dateCreated;
 
+    @JsonProperty("like")
     @Field("like")
     private int like;
 
@@ -33,11 +36,11 @@ public class CommentStorageModel {
         this.message = message;
     }
 
-    public LocalDate getDateCreated() {
+    public long getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(LocalDate dateCreated) {
+    public void setDateCreated(long dateCreated) {
         this.dateCreated = dateCreated;
     }
 
