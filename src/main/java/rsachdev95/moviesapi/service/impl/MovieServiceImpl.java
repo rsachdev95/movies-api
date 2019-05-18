@@ -34,7 +34,7 @@ public class MovieServiceImpl implements MovieService {
     public String findMostFrequentCommenter() {
         List<Movie> movies = findAll();
         List<String> users = movies.parallelStream().flatMap(m -> m.getComments().parallelStream()).map(Comment::getUser).collect(Collectors.toList());
-        Map.Entry<String, Long> stringLongEntry = users.parallelStream().collect(Collectors.groupingBy(u -> u, Collectors.counting())).entrySet().parallelStream().max(Comparator.comparing(Map.Entry::getValue)).get();
+        Map.Entry<String, Long> stringLongEntry = users.parallelStream().collect(Collectors.groupingBy(u -> u, Collectors.counting())).entrySet().parallelStream().max(Comparator.comparing(Map.Entry::getValue)).orElseThrow(NoSuchElementException::new);
         return stringLongEntry.getKey();
     }
 

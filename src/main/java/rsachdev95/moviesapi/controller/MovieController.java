@@ -36,12 +36,16 @@ public class MovieController {
 
     @GetMapping(value = "/most-comments")
     public ResponseEntity<String> getUserWithMostComments() {
+        String user;
+
         LOG.info("Getting user who added the most comments");
-        String user = movieService.findMostFrequentCommenter();
-        if(user == null) {
-            LOG.error("Unable to find user with most comments");
+        try {
+            user = movieService.findMostFrequentCommenter();
+        } catch (NoSuchElementException ne) {
+            LOG.error("Service returned a NoSuchElementException");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
@@ -53,7 +57,7 @@ public class MovieController {
         try {
             movie = movieService.findMostLikes();
         } catch (NoSuchElementException ne) {
-            LOG.error("Service returned a NoSuchElementError: " + ne.getMessage());
+            LOG.error("Service returned a NoSuchElementException: " + ne.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
