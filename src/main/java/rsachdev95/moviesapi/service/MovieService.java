@@ -8,4 +8,5 @@ public interface MovieService {
     List<Movie> findAll();
     String findMostFrequentCommenter();
     String findMostLikes();
+    Movie findById(String id);
 }

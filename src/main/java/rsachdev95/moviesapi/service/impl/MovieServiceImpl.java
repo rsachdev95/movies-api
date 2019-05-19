@@ -33,14 +33,34 @@ public class MovieServiceImpl implements MovieService {
     //TODO: sort this out eventually.
     public String findMostFrequentCommenter() {
         List<Movie> movies = findAll();
-        List<String> users = movies.parallelStream().flatMap(m -> m.getComments().parallelStream()).map(Comment::getUser).collect(Collectors.toList());
-        Map.Entry<String, Long> stringLongEntry = users.parallelStream().collect(Collectors.groupingBy(u -> u, Collectors.counting())).entrySet().parallelStream().max(Comparator.comparing(Map.Entry::getValue)).orElseThrow(NoSuchElementException::new);
+        List<String> users = movies.parallelStream()
+                                   .flatMap(m -> m.getComments().parallelStream())
+                                   .map(Comment::getUser)
+                                   .collect(Collectors.toList());
+        Map.Entry<String, Long> stringLongEntry = users.parallelStream()
+                                                       .collect(Collectors.groupingBy(u -> u, Collectors.counting()))
+                                                       .entrySet()
+                                                       .parallelStream()
+                                                       .max(Comparator.comparing(Map.Entry::getValue))
+                                                       .orElseThrow(NoSuchElementException::new);
         return stringLongEntry.getKey();
     }
 
     public String findMostLikes() {
         List<Movie> movies = findAll();
-        Movie movie = movies.parallelStream().max(Comparator.comparing(Movie::getLikes)).orElseThrow(NoSuchElementException::new);
+        Movie movie = movies.parallelStream()
+                            .max(Comparator.comparing(Movie::getLikes))
+                            .orElseThrow(NoSuchElementException::new);
         return movie.getTitle();
+    }
+
+    public Movie findById(String id) {
+        Optional<Movie> movie = movieRepository.findById(id);
+        if(!movie.isPresent()) {
+            LOG.error("Movie id: " + id + " does not exist");
+            return null;
+        }
+
+        return movie.get();
     }
 }

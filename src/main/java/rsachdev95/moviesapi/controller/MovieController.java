@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import rsachdev95.moviesapi.MoviesApiApplication;
@@ -41,8 +42,8 @@ public class MovieController {
         LOG.info("Getting user who added the most comments");
         try {
             user = movieService.findMostFrequentCommenter();
-        } catch (NoSuchElementException ne) {
-            LOG.error("Service returned a NoSuchElementException");
+        } catch (NoSuchElementException nse) {
+            LOG.error("Service returned a NoSuchElementException: " + nse.toString());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -56,8 +57,19 @@ public class MovieController {
         LOG.info("Getting movie with most likes");
         try {
             movie = movieService.findMostLikes();
-        } catch (NoSuchElementException ne) {
-            LOG.error("Service returned a NoSuchElementException: " + ne.getMessage());
+        } catch (NoSuchElementException nse) {
+            LOG.error("Service returned a NoSuchElementException: " + nse.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(movie);
+    }
+
+    @GetMapping(value="/{movie-id}")
+    public ResponseEntity<Movie> getMovieById(@PathVariable("movie-id") String id) {
+        LOG.info("Getting movie with id: " + id);
+        Movie movie = movieService.findById(id);
+        if(movie == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
