@@ -22,8 +22,9 @@ public class MovieServiceImpl implements MovieService {
     private MovieRepository movieRepository;
 
     /**
-     * Returns a list of all movies in the database.
-     * @return
+     * Returns a list of all {@link Movie} in the database.
+     *
+     * @return list of movies
      */
     public List<Movie> findAll() {
         List<Movie> movies = movieRepository.findAll();
@@ -35,43 +36,61 @@ public class MovieServiceImpl implements MovieService {
     }
 
     /**
-     * Gets a list of all users (including duplicates) that have
-     * commented on a movie. Then, creates a map of the username
-     * and the number of times the username has occurred. Finally,
-     * the max number of times the username has occurred is determined
-     * and returned.
-     * @return
+     * Generates a map of usernames and frequency
+     * and determines the max frequency
+     *
+     * @return the most frequent username occurrency
      */
     public String findMostFrequentCommenter() {
         List<Movie> movies = findAll();
 
-        List<String> users = movies.parallelStream()
-                                   .flatMap(m -> m.getComments().parallelStream())
-                                   .map(Comment::getUser)
-                                   .collect(Collectors.toList());
+        List<String> users = getOccurrencesOfUsername(movies);
 
-        Map.Entry<String, Long> stringLongEntry = users.parallelStream()
-                                                       .collect(Collectors.groupingBy(u -> u, Collectors.counting()))
-                                                       .entrySet()
-                                                       .parallelStream()
-                                                       .max(Comparator.comparing(Map.Entry::getValue))
-                                                       .orElseThrow(NoSuchElementException::new);
-        return stringLongEntry.getKey();
+        Map.Entry<String, Long> frequency = users.stream()
+                                                 .collect(Collectors.groupingBy(u -> u, Collectors.counting()))
+                                                 .entrySet()
+                                                 .stream()
+                                                 .max(Comparator.comparing(Map.Entry::getValue))
+                                                 .orElseThrow(NoSuchElementException::new);
+        return frequency.getKey();
+    }
+
+    /**
+     * Gets a list of all users from the provided {@link Movie} list
+     * by streaming a list of comments and adding each occurrence of
+     * a username
+     *
+     * @param movies : list of all movies
+     * @return a list of users
+     */
+    private List<String> getOccurrencesOfUsername(List<Movie> movies) {
+
+        return movies.stream()
+                .flatMap(m -> m.getComments().stream())
+                .map(Comment::getUser)
+                .collect(Collectors.toList());
     }
 
     /**
      * Finds the max of the movie by checking its 'likes'
      * attribute.
-     * @return
+     *
+     * @return title of movie
      */
     public String findMostLikes() {
         List<Movie> movies = findAll();
-        Movie movie = movies.parallelStream()
+        Movie movie = movies.stream()
                             .max(Comparator.comparing(Movie::getLikes))
                             .orElseThrow(NoSuchElementException::new);
         return movie.getTitle();
     }
 
+    /**
+     * Fetches a {@link Movie} by its corresponding id
+     *
+     * @param id of the movie
+     * @return {@link Movie}
+     */
     public Movie findById(String id) {
         Optional<Movie> movie = movieRepository.findById(id);
         if(!movie.isPresent()) {
