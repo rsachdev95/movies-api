@@ -21,6 +21,10 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     private MovieRepository movieRepository;
 
+    /**
+     * Returns a list of all movies in the database.
+     * @return
+     */
     public List<Movie> findAll() {
         List<Movie> movies = movieRepository.findAll();
         if(movies.isEmpty()) {
@@ -30,13 +34,22 @@ public class MovieServiceImpl implements MovieService {
         return movies;
     }
 
-    //TODO: sort this out eventually.
+    /**
+     * Gets a list of all users (including duplicates) that have
+     * commented on a movie. Then, creates a map of the username
+     * and the number of times the username has occurred. Finally,
+     * the max number of times the username has occurred is determined
+     * and returned.
+     * @return
+     */
     public String findMostFrequentCommenter() {
         List<Movie> movies = findAll();
+
         List<String> users = movies.parallelStream()
                                    .flatMap(m -> m.getComments().parallelStream())
                                    .map(Comment::getUser)
                                    .collect(Collectors.toList());
+
         Map.Entry<String, Long> stringLongEntry = users.parallelStream()
                                                        .collect(Collectors.groupingBy(u -> u, Collectors.counting()))
                                                        .entrySet()
@@ -46,6 +59,11 @@ public class MovieServiceImpl implements MovieService {
         return stringLongEntry.getKey();
     }
 
+    /**
+     * Finds the max of the movie by checking its 'likes'
+     * attribute.
+     * @return
+     */
     public String findMostLikes() {
         List<Movie> movies = findAll();
         Movie movie = movies.parallelStream()
